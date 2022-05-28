@@ -1,12 +1,10 @@
 import {
-    Action,
-  ActionPanel,
-  closeMainWindow,
-  environment,
-  List,
-  popToRoot,
-  showHUD,
-  showToast,
+Action,
+ActionPanel,
+environment,
+List,
+popToRoot,
+showHUD
 } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { existsSync, mkdirSync } from "fs";
@@ -15,7 +13,8 @@ import { runAppleScript } from "run-applescript";
 import { image } from "image-downloader";
 
 const downloadDir = resolve(environment.supportPath, "download");
-const latexUrl = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\inline&space;\\huge&space;\\dpi{300}\\bg{white}")
+const latexUrl = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{300}")
+const latexUrlDark = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{300}\\bg{white}")
 export default function CommandWithCustoEmptyView() {
   const [state, setState] = useState({ searchText: "", items: [] });
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function CommandWithCustoEmptyView() {
       }>
       { state.searchText != "" ? (
         <List.EmptyView
-          icon={{ source: latexUrl + encodeURIComponent(state.searchText) }}
+          icon={{ source: {light:  latexUrl + encodeURIComponent(state.searchText), dark: latexUrlDark + encodeURIComponent(state.searchText) } }}
           actions={
             <ActionPanel>
                 <Action title="Copy LaTeX image" onAction={() => { copylatex(latexUrl + encodeURIComponent(state.searchText)) }} />
@@ -51,7 +50,7 @@ export default function CommandWithCustoEmptyView() {
             runAppleScript(`set the clipboard to POSIX file "${downloadDir}/img.jpg"`),popToRoot(), showHUD("Copied.")
         })
         .catch(() => {
-            console.log("Error parsing latex")
+            console.log("Error check your internet connection.")
         })
   }
 }
