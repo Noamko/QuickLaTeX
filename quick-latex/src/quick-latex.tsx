@@ -46,8 +46,8 @@ export default function CommandWithCustoEmptyView() {
   );
 
   function copylatex(url:string) {
-      image({url: url, dest: downloadDir + "/img.jpg"}).then(res => {
-            runAppleScript(`set the clipboard to POSIX file "${downloadDir}/img.jpg"`), showHUD("Copied.")
+      image({url: url, dest: downloadDir + "/img.png"}).then(res => {
+            runAppleScript(`set the clipboard to (read (POSIX file "${downloadDir}/img.png") as  {«class PNGf»})`), showHUD("Copied.")
         })
         .catch(() => {
             console.log("Error check your internet connection.")
