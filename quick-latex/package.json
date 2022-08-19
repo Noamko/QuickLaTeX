@@ -3,7 +3,7 @@
   "name": "quick-latex",
   "title": "Quick LaTeX",
   "description": "Converts LaTeX text to image. Copy the image to the Clipboard.",
-  "icon": "command-icon.png",
+  "icon": "icon.png",
   "author": "Noamko",
   "categories": [
     "Design Tools",
@@ -18,8 +18,8 @@
     {
       "name": "quick-latex",
       "title": "Quick Latex",
-      "subtitle": "Quickly create LaTeX",
-      "description": "",
+      "subtitle": "",
+      "description": "Quickly convert LaTeX to image and copy the image to the Clipboard.",
       "mode": "view"
     }
   ],
