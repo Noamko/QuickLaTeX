@@ -34,7 +34,7 @@ export default function CommandWithCustoEmptyView() {
               actions={
                 <ActionPanel>
                   <Action
-                    title="Copy LaTeX Image"
+                    title="Copy LaTeX imagee to Clipboard"
                     onAction={() => {
                       runAppleScript(`set the clipboard to POSIX file "${downloadDir}/img.jpg"`),
                         popToRoot(),
