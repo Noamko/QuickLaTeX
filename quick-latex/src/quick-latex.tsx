@@ -6,16 +6,18 @@ import { runAppleScript } from "run-applescript";
 import { image } from "image-downloader";
 
 const downloadDir = resolve(environment.supportPath, "download");
-const latexUrl = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{300}");
-const latexUrlDark = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{300}\\bg{white}");
+const latexUrl = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{512}");
+const latexUrlDark = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{512}\\bg{white}");
+console.log(latexUrl);
 export default function CommandWithCustoEmptyView() {
-  const [state, setState] = useState({ searchText: "", items: [] });
+  const [state, setState] = useState({ searchText: "LaTeX", items: [] });
   useEffect(() => {
     // perform an API call that eventually populates `items`.
     if (!existsSync(downloadDir)) {
       mkdirSync(downloadDir, { recursive: true });
     }
   }, [state.searchText]);
+  
   return (
     <List onSearchTextChange={(newValue) => setState((previous) => ({ ...previous, searchText: newValue }))}>
       {state.searchText != ""
@@ -26,6 +28,7 @@ export default function CommandWithCustoEmptyView() {
                 source: {
                   light: latexUrl + encodeURIComponent(state.searchText),
                   dark: latexUrlDark + encodeURIComponent(state.searchText),
+                  
                 },
               }}
               actions={
