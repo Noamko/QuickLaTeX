@@ -1,3 +1,8 @@
 # Quick LaTeX Changelog
 
+## [Support for more formats] - 2023-09-12
+
+- Add support for PNG, GIF, SVG, EMF and PDF
+- Use white font color to display LaTeX in dark mode
+
 ## [Initial Version] - 2022-05-28

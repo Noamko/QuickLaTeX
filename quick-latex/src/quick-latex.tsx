@@ -3,54 +3,60 @@ import { useState, useEffect } from "react";
 import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { runAppleScript } from "run-applescript";
-import { image } from "image-downloader";
+import { DownloadResult, image } from "image-downloader";
+import { BASE_URL, ExportType, DISPLAY_LATEX_URL } from "./utils";
 
 const downloadDir = resolve(environment.supportPath, "download");
-const latexUrl = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{512}");
-const latexUrlDark = "https://latex.codecogs.com/png.image?" + encodeURIComponent("\\dpi{512}\\bg{white}");
-console.log(latexUrl);
+
 export default function CommandWithCustoEmptyView() {
-  const [state, setState] = useState({ searchText: "LaTeX", items: [] });
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    // perform an API call that eventually populates `items`.
     if (!existsSync(downloadDir)) {
       mkdirSync(downloadDir, { recursive: true });
     }
-  }, [state.searchText]);
-  
+  }, []);
+
+  function downloadlatex(exportType: ExportType) {
+    const latex = searchText == "" ? "LaTeX" : searchText;
+    const url = BASE_URL + exportType + ".image?" + encodeURIComponent("\\dpi{512}") + encodeURIComponent(latex);
+    return image({ url: url, dest: downloadDir + "/img." + exportType });
+  }
+
+  const defaultIcon = { source: DISPLAY_LATEX_URL + encodeURIComponent("{\\color{White} LaTeX}") };
+
   return (
-    <List onSearchTextChange={(newValue) => setState((previous) => ({ ...previous, searchText: newValue }))}>
-      {state.searchText != ""
-        ? (downloadlatex(latexUrl + encodeURIComponent(state.searchText)),
-          (
-            <List.EmptyView
-              icon={{
-                source: {
-                  light: latexUrl + encodeURIComponent(state.searchText),
-                  dark: latexUrlDark + encodeURIComponent(state.searchText),
-                  
-                },
-              }}
-              actions={
-                <ActionPanel>
-                  <Action
-                    title="Copy LaTeX imagee to Clipboard"
-                    onAction={() => {
-                      runAppleScript(`set the clipboard to POSIX file "${downloadDir}/img.jpg"`),
-                        popToRoot(),
-                        showHUD("Copied");
-                    }}
-                  />
-                </ActionPanel>
+    <List onSearchTextChange={setSearchText} searchText={searchText}>
+      <List.EmptyView
+        icon={
+          searchText == ""
+            ? defaultIcon
+            : {
+                source: DISPLAY_LATEX_URL + encodeURIComponent(`{\\color{White} ${searchText}}`),
               }
-            />
-          ))
-        : state.items.map((item) => <List.Item key={item} title={item} />)}
+        }
+        actions={
+          <ActionPanel>
+            {Object.values(ExportType).map((exportType) => (
+              <Action
+                key={exportType}
+                title={"Copy as " + exportType.toUpperCase()}
+                onAction={() => {
+                  downloadlatex(exportType)
+                    .then((res: DownloadResult) => {
+                      runAppleScript(`set the clipboard to POSIX file "${res.filename}"`);
+                      popToRoot();
+                      showHUD("Copied");
+                    })
+                    .catch(() => {
+                      showHUD("No internet connection. Or something else.");
+                    });
+                }}
+              />
+            ))}
+          </ActionPanel>
+        }
+      />
     </List>
   );
-  function downloadlatex(url: string) {
-    image({ url: url, dest: downloadDir + "/img.jpg" }).catch(() => {
-      console.log("Error check your internet connection.");
-    });
-  }
 }
