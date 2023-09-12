@@ -23,7 +23,12 @@ export default function CommandWithCustoEmptyView() {
     return image({ url: url, dest: downloadDir + "/img." + exportType });
   }
 
-  const defaultIcon = { source: DISPLAY_LATEX_URL + encodeURIComponent("{\\color{White} LaTeX}") };
+  const defaultIcon = {
+    source: {
+      light: DISPLAY_LATEX_URL + encodeURIComponent("LaTeX"),
+      dark: DISPLAY_LATEX_URL + encodeURIComponent("{\\color{White} LaTeX}"),
+    },
+  };
 
   return (
     <List onSearchTextChange={setSearchText} searchText={searchText}>
@@ -32,7 +37,10 @@ export default function CommandWithCustoEmptyView() {
           searchText == ""
             ? defaultIcon
             : {
-                source: DISPLAY_LATEX_URL + encodeURIComponent(`{\\color{White} ${searchText}}`),
+                source: {
+                  light: DISPLAY_LATEX_URL + encodeURIComponent(searchText),
+                  dark: DISPLAY_LATEX_URL + encodeURIComponent(`{\\color{White} ${searchText}}`),
+                },
               }
         }
         actions={
