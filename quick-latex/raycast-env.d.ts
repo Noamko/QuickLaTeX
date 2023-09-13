@@ -14,7 +14,14 @@ declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
   /** Preferences accessible in the `quick-latex` command */
-  export type QuickLatex = ExtensionPreferences & {}
+  export type QuickLatex = ExtensionPreferences & {
+  /** SVG Width - Width of the SVG image. */
+  "svgWidth": string,
+  /** SVG Height - Height of the SVG image. */
+  "svgHeight": string,
+  /** SVG Viewbox - Viewbox of the SVG image. */
+  "svgViewbox": string
+}
 }
 
 declare namespace Arguments {

@@ -4,5 +4,6 @@
 
 - Add support for PNG, GIF, SVG, EMF and PDF
 - Use white font color to display LaTeX in dark mode
+- Add preferences to change SVG width, height and viewbox
 
 ## [Initial Version] - 2022-05-28

@@ -1,48 +1,25 @@
-import { Action, ActionPanel, environment, List, popToRoot, showHUD } from "@raycast/api";
-import { useState, useEffect } from "react";
-import { existsSync, mkdirSync } from "fs";
-import { resolve } from "path";
-import { runAppleScript } from "run-applescript";
-import { DownloadResult, image } from "image-downloader";
-import { BASE_URL, ExportType, DISPLAY_LATEX_URL } from "./utils";
+import { Action, ActionPanel, List, popToRoot, showHUD } from "@raycast/api";
+import fs from "fs";
+import { useEffect, useState } from "react";
 
-const downloadDir = resolve(environment.supportPath, "download");
+import { downloadLatex, getDisplayLatex } from "./api";
+import { DEFAULT_ICON, DOWNLOAD_DIR, ExportType, toClipboard } from "./utils";
 
 export default function CommandWithCustoEmptyView() {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    if (!existsSync(downloadDir)) {
-      mkdirSync(downloadDir, { recursive: true });
+    if (!fs.existsSync(DOWNLOAD_DIR)) {
+      fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
     }
   }, []);
 
-  function downloadlatex(exportType: ExportType) {
-    const latex = searchText == "" ? "LaTeX" : searchText;
-    const url = BASE_URL + exportType + ".image?" + encodeURIComponent("\\dpi{512}") + encodeURIComponent(latex);
-    return image({ url: url, dest: downloadDir + "/img." + exportType });
-  }
-
-  const defaultIcon = {
-    source: {
-      light: DISPLAY_LATEX_URL + encodeURIComponent("LaTeX"),
-      dark: DISPLAY_LATEX_URL + encodeURIComponent("{\\color{White} LaTeX}"),
-    },
-  };
+  const icon = searchText == "" ? DEFAULT_ICON : getDisplayLatex(searchText);
 
   return (
     <List onSearchTextChange={setSearchText} searchText={searchText}>
       <List.EmptyView
-        icon={
-          searchText == ""
-            ? defaultIcon
-            : {
-                source: {
-                  light: DISPLAY_LATEX_URL + encodeURIComponent(searchText),
-                  dark: DISPLAY_LATEX_URL + encodeURIComponent(`{\\color{White} ${searchText}}`),
-                },
-              }
-        }
+        icon={icon}
         actions={
           <ActionPanel>
             {Object.values(ExportType).map((exportType) => (
@@ -50,11 +27,11 @@ export default function CommandWithCustoEmptyView() {
                 key={exportType}
                 title={"Copy as " + exportType.toUpperCase()}
                 onAction={() => {
-                  downloadlatex(exportType)
-                    .then((res: DownloadResult) => {
-                      runAppleScript(`set the clipboard to POSIX file "${res.filename}"`);
+                  downloadLatex(exportType, searchText)
+                    .then((path: string) => {
+                      toClipboard(path);
                       popToRoot();
-                      showHUD("Copied");
+                      showHUD("Copied to clipboard.");
                     })
                     .catch(() => {
                       showHUD("No internet connection. Or something else.");
