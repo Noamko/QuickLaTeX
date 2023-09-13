@@ -26,7 +26,10 @@ declare namespace Preferences {
 
 declare namespace Arguments {
   /** Arguments passed to the `quick-latex` command */
-  export type QuickLatex = {}
+  export type QuickLatex = {
+  /** LaTeX */
+  "latex": string
+}
 }
 
 

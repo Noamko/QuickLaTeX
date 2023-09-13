@@ -47,6 +47,14 @@
           "required": false
         }
           
+      ],
+      "arguments": [
+        {
+          "name": "latex",
+          "type": "text",
+          "required": false,
+          "placeholder": "LaTeX"
+        }
       ]
     }
   ],

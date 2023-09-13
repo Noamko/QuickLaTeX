@@ -1,4 +1,5 @@
 import { Clipboard, environment, showHUD } from "@raycast/api";
+import fs from "fs";
 import { resolve } from "path";
 
 export enum ExportType {
@@ -36,6 +37,10 @@ export interface QuickLatexPreferences {
   svgViewbox: string;
 }
 
+export interface QuickLatexArguments {
+  latex: string | undefined;
+}
+
 export async function toClipboard(file: string) {
   // copies a file (path) as file to clipboard
   try {
@@ -43,5 +48,11 @@ export async function toClipboard(file: string) {
     await Clipboard.copy(fileContent);
   } catch (error) {
     showHUD(`Could not copy file '${file}'. Reason: ${error}`);
+  }
+}
+
+export function makeDonwloadDir() {
+  if (!fs.existsSync(DOWNLOAD_DIR)) {
+    fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
   }
 }

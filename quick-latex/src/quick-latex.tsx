@@ -1,17 +1,14 @@
-import { Action, ActionPanel, List, popToRoot, showHUD } from "@raycast/api";
-import fs from "fs";
+import { Action, ActionPanel, LaunchProps, List, popToRoot, showHUD } from "@raycast/api";
 import { useEffect, useState } from "react";
 
 import { downloadLatex, getDisplayLatex } from "./api";
-import { DEFAULT_ICON, DOWNLOAD_DIR, ExportType, toClipboard } from "./utils";
+import { DEFAULT_ICON, ExportType, QuickLatexArguments, makeDonwloadDir, toClipboard } from "./utils";
 
-export default function CommandWithCustoEmptyView() {
-  const [searchText, setSearchText] = useState("");
+export default function CommandWithCustoEmptyView(props: LaunchProps<{ arguments: QuickLatexArguments }>) {
+  const [searchText, setSearchText] = useState(props.arguments.latex ?? "");
 
   useEffect(() => {
-    if (!fs.existsSync(DOWNLOAD_DIR)) {
-      fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
-    }
+    makeDonwloadDir();
   }, []);
 
   const icon = searchText == "" ? DEFAULT_ICON : getDisplayLatex(searchText);
