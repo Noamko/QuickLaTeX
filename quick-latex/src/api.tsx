@@ -31,8 +31,8 @@ export async function downloadLatex(exportType: ExportType, searchText: string) 
       text = await editSVG(text);
       image = text;
     } else {
-      let data = await res.arrayBuffer();
-      let buffer = Buffer.from(data);
+      const data = await res.arrayBuffer();
+      const buffer = Buffer.from(data);
       image = buffer;
     }
 
